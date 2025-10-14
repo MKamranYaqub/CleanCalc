@@ -87,3 +87,79 @@ export const isMarginProduct = (rateData, tier, productName) => {
 
   return rateData[tier].products[productName].isMargin === true;
 };
+/**
+ * Select rate source based on all parameters
+ */
+export const selectRateSource = ({ propertyType, productGroup, isRetention, retentionLtv, tier, productType }) => {
+  const rateData = getRateData(
+    propertyType,
+    productGroup,
+    isRetention === 'Yes',
+    Number(retentionLtv)
+  );
+  
+  if (!rateData || !rateData[tier]) return null;
+  
+  const products = rateData[tier].products;
+  return products[productType] || null;
+};
+
+/**
+ * Get fee columns based on property type and retention status
+ */
+export const getFeeColumns = ({ productGroup, isRetention, retentionLtv, propertyType }) => {
+  if (isRetention === 'Yes') {
+    // Retention products use different fee structure
+    if (propertyType === PROPERTY_TYPES.RESIDENTIAL) {
+      return ['5.5', '3.5', '2.5', '1.5'];
+    } else {
+      // Semi-Commercial and Commercial
+      return ['5.5', '3.5', '1.5'];
+    }
+  } else {
+    // Standard products
+    if (propertyType === PROPERTY_TYPES.RESIDENTIAL) {
+      return ['6', '4', '3', '2'];
+    } else {
+      // Semi-Commercial and Commercial
+      return ['6', '4', '2'];
+    }
+  }
+};
+
+/**
+ * Get maximum LTV for property type and tier
+ */
+export const getMaxLTV = ({ propertyType, isRetention, retentionLtv, propertyAnswers, tier, productType }) => {
+  // Base LTV by property type and tier
+  const baseLTV = {
+    [PROPERTY_TYPES.RESIDENTIAL]: {
+      'Tier 1': 0.75,
+      'Tier 2': 0.70,
+      'Tier 3': 0.65,
+    },
+    [PROPERTY_TYPES.SEMI_COMMERCIAL]: {
+      'Tier 1': 0.70,
+      'Tier 2': 0.65,
+    },
+    [PROPERTY_TYPES.COMMERCIAL]: {
+      'Tier 1': 0.70,
+      'Tier 2': 0.65,
+    },
+  };
+
+  return baseLTV[propertyType]?.[tier] || 0.75;
+};
+
+/**
+ * Apply floor rate for Core products
+ */
+export const applyFloorRate = (rate, productGroup, propertyType) => {
+  const CORE_FLOOR_RATE = 0.055; // 5.5% minimum for Core products
+  
+  if (productGroup === PRODUCT_GROUPS.CORE && propertyType === PROPERTY_TYPES.RESIDENTIAL) {
+    return Math.max(rate, CORE_FLOOR_RATE);
+  }
+  
+  return rate;
+};
