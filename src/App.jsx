@@ -1,5 +1,5 @@
 /**
- * Main application component with repositioned product group toggle
+ * Main application component
  */
 import React, { useState, useMemo, useEffect } from 'react';
 import { useProductSelection } from './hooks/useProductSelection';
@@ -13,12 +13,11 @@ import { FeesSection } from './components/FeesSection';
 import { SummarySection } from './components/SummarySection';
 import { MatrixSection } from './components/MatrixSection';
 import { BasicGrossSection } from './components/BasicGrossSection';
-import { ProductGroupToggle } from './components/ProductGroupToggle';
 import { parseNumber, formatCurrency } from './utils/formatters';
 import { selectRateSource, getFeeColumns, getMaxLTV } from './utils/rateSelectors';
 import { computeColumnData } from './utils/calculationEngine';
 import { LOAN_LIMITS } from './config/loanLimits';
-import { PRODUCT_TYPES_LIST, PRODUCT_GROUPS, LOAN_TYPES, PROPERTY_TYPES } from './config/constants';
+import { PRODUCT_TYPES_LIST, PRODUCT_GROUPS, LOAN_TYPES } from './config/constants';
 import './styles/styles.css';
 
 function App() {
@@ -250,6 +249,9 @@ function App() {
         setIsRetention={setIsRetention}
         retentionLtv={retentionLtv}
         setRetentionLtv={setRetentionLtv}
+        productGroup={productGroup}
+        setProductGroup={setProductGroup}
+        isWithinCoreCriteria={isWithinCoreCriteria}
         tier={tier}
       />
 
@@ -302,16 +304,6 @@ function App() {
         productType={productType}
         tier={tier}
       />
-
-      {/* PRODUCT GROUP TOGGLE - Now positioned above matrix */}
-      {canShowMatrix && propertyType === PROPERTY_TYPES.RESIDENTIAL && (
-        <ProductGroupToggle
-          productGroup={productGroup}
-          setProductGroup={setProductGroup}
-          isWithinCoreCriteria={isWithinCoreCriteria}
-          tier={tier}
-        />
-      )}
 
       {canShowMatrix && (
         <>

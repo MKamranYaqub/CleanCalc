@@ -25,6 +25,7 @@ export const LTV_BANDS = {
   COMMERCIAL: [6, 4, 2],
 };
 
+<<<<<<< HEAD
 // Retention LTV Bands by Property Type
 export const RETENTION_LTV_BANDS = {
   RESIDENTIAL: [5.5, 3.5, 2.5, 1.5],
@@ -37,4 +38,22 @@ export const AVAILABLE_TIERS = {
   RESIDENTIAL: [TIERS.TIER_1, TIERS.TIER_2, TIERS.TIER_3],
   SEMI_COMMERCIAL: [TIERS.TIER_1, TIERS.TIER_2],
   COMMERCIAL: [TIERS.TIER_1, TIERS.TIER_2],
+=======
+export const CORE_FLOOR_RATE = 0.055; // 5.5%
+
+export const PRODUCT_TYPES_LIST = {
+  Residential: ["2yr Fix", "3yr Fix", "2yr Tracker"],
+  Commercial: ["2yr Fix", "3yr Fix", "2yr Tracker"],
+  "Semi-Commercial": ["2yr Fix", "3yr Fix", "2yr Tracker"],
+};
+
+export const FEE_COLUMNS = {
+  Residential: [6, 4, 3, 2],
+  Commercial: [6, 4, 2],
+  RetentionResidential: [5.5, 3.5, 2.5, 1.5],
+  RetentionCommercial: [5.5, 3.5, 1.5],
+  Core: [6, 4, 3, 2],
+  Core_Retention_65: [5.5, 3.5, 2.5, 1.5],
+  Core_Retention_75: [5.5, 3.5, 2.5, 1.5],
+>>>>>>> parent of 676ab29 (update)
 };
