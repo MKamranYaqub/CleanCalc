@@ -1,335 +1,113 @@
-export const CRITERIA_CONFIG = {
-    Residential: {
-      propertyQuestions: [
-        {
-          key: "hmo",
-          label: "HMO",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Up to 6 beds (Tier 2)", tier: 2 },
-            { label: "More than 6 beds (Tier 3)", tier: 3 },
-          ],
-        },
-        {
-          key: "mufb",
-          label: "MUFB",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Up to 6 units (Tier 2)", tier: 2 },
-            { label: "Less than 30 units (Tier 3)", tier: 3 },
-          ],
-        },
-        {
-          key: "holiday",
-          label: "Holiday Let?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 3 },
-          ],
-        },
-        {
-          key: "flatAboveComm",
-          label: "Flat above commercial?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-      ],
-      applicantQuestions: [
-        {
-          key: "expat",
-          label: "Expat",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Yes - UK footprint (Tier 2)", tier: 2 },
-            { label: "Yes - Without UK footprint (Tier 3)", tier: 3 },
-          ],
-        },
-        {
-          key: "fnational",
-          label: "Foreign National",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Yes - with ILR (Tier 2)", tier: 2 },
-            { label: "Yes - Without ILR (Tier 3)", tier: 3 },
-          ],
-        },
-        {
-          key: "ftl",
-          label: "First Time Landlord?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-        {
-          key: "offshore",
-          label: "Offshore company?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 3 },
-          ],
-        },
-        {
-          key: "mortgageArrears",
-          label: "Mortgage Arrears (in last 24 months)",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "0 in 24", tier: 1 },
-            { label: "0 in 18", tier: 2 },
-            { label: "Any (by referral)", tier: 3 },
-          ],
-        },
-        {
-          key: "unsecuredArrears",
-          label: "Unsecured Arrears (in last 24 months)",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "0 in 24", tier: 1 },
-            { label: "0 in 12", tier: 2 },
-            { label: "Any (by referral)", tier: 3 },
-          ],
-        },
-        {
-          key: "ccjDefault",
-          label: "CCJ & Default (last 24 months)",
-          helper: "Ignore <£350, telecom, utility",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "0 in 24", tier: 1 },
-            { label: "0 in 18", tier: 2 },
-            { label: "Any (by referral)", tier: 3 },
-          ],
-        },
-        {
-          key: "bankruptcy",
-          label: "Bankruptcy",
-          options: [
-            { label: "Never", tier: 1 },
-            { label: "Discharged (by referral)", tier: 3 },
-          ],
-        },
-      ],
-    },
-    Commercial: {
-      propertyQuestions: [
-        {
-          key: "hmo",
-          label: "HMO",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Up to 12 beds (Tier 1)", tier: 1 },
-            { label: "More than 12 beds (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "mufb",
-          label: "MUFB",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Up to 12 units (Tier 1)", tier: 1 },
-            { label: "More than 12 units (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "ownerocc",
-          label: "Owner Occupier?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-        {
-          key: "devexit",
-          label: "Developer Exit?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-      ],
-      applicantQuestions: [
-        {
-          key: "expat",
-          label: "Expat",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Yes (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "fnational",
-          label: "Foreign National",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Yes (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "ftl",
-          label: "First Time Landlord?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-        {
-          key: "offshore",
-          label: "Offshore Company?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-        {
-          key: "mortgageArrears",
-          label: "Mortgage Arrears",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "2 in 18, 0 in 6", tier: 1 },
-            { label: "All considered by referral", tier: 2 },
-          ],
-        },
-        {
-          key: "unsecuredArrears",
-          label: "Unsecured Arrears",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "2 in last 18", tier: 1 },
-            { label: "All considered by referral", tier: 2 },
-          ],
-        },
-        {
-          key: "ccjDefault",
-          label: "CCJ & Default",
-          helper: "Ignore <£350, telecom, utility",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "2 in 18, 0 in 6", tier: 1 },
-            { label: "All considered by referral", tier: 2 },
-          ],
-        },
-        {
-          key: "bankruptcy",
-          label: "Bankruptcy",
-          options: [
-            { label: "Never", tier: 1 },
-            { label: "Discharged > 3 years", tier: 1 },
-            { label: "All considered by referral", tier: 2 },
-          ],
-        },
-      ],
-    },
-  };
-  
-  export const CORE_CRITERIA_CONFIG = {
-    Residential: {
-      propertyQuestions: [
-        {
-          key: "hmo",
-          label: "HMO",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Up to 6 beds (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "mufb",
-          label: "MUFB",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Up to 6 units (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "holiday",
-          label: "Holiday Let?",
-          options: [{ label: "No", tier: 1 }],
-        },
-        {
-          key: "flatAboveComm",
-          label: "Flat above commercial?",
-          options: [{ label: "No", tier: 1 }],
-        },
-      ],
-      applicantQuestions: [
-        {
-          key: "expat",
-          label: "Expat",
-          options: [
-            { label: "No (Tier 1)", tier: 1 },
-            { label: "Yes - UK footprint (Tier 2)", tier: 2 },
-          ],
-        },
-        {
-          key: "fnational",
-          label: "Foreign National",
-          options: [{ label: "No (Tier 1)", tier: 1 }],
-        },
-        {
-          key: "ftl",
-          label: "First Time Landlord?",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "Yes", tier: 2 },
-          ],
-        },
-        {
-          key: "offshore",
-          label: "Offshore company?",
-          options: [{ label: "No", tier: 1 }],
-        },
-        {
-          key: "mortgageArrears",
-          label: "Mortgage Arrears (in last 24 months)",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "0 in 24", tier: 1 },
-            { label: "0 in 18", tier: 2 },
-          ],
-        },
-        {
-          key: "unsecuredArrears",
-          label: "Unsecured Arrears (in last 24 months)",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "0 in 24", tier: 1 },
-            { label: "0 in 12", tier: 2 },
-          ],
-        },
-        {
-          key: "ccjDefault",
-          label: "CCJ & Default (last 24 months)",
-          helper: "Ignore <£350, telecom, utility",
-          options: [
-            { label: "No", tier: 1 },
-            { label: "0 in 24", tier: 1 },
-            { label: "0 in 18", tier: 2 },
-          ],
-        },
-        {
-          key: "bankruptcy",
-          label: "Bankruptcy",
-          options: [{ label: "Never", tier: 1 }],
-        },
-      ],
-    },
-  };
-  
-  export const MAX_LTV_RULES = {
-    default: {
-      Residential: 75,
-      Commercial: 70,
-      "Semi-Commercial": 70,
-    },
-    retention: {
-      Residential: { 75: 75, 65: 65 },
-      Commercial: { 75: 70, 65: 65 },
-      "Semi-Commercial": { 75: 70, 65: 65 },
-    },
-    flatAboveCommOverrides: {
-      "Tier 2": 60,
-      "Tier 3": 70,
-    },
-  };
+import { PROPERTY_TYPES } from './constants';
+
+// Residential Criteria Questions
+export const RESIDENTIAL_CRITERIA = [
+  {
+    id: 'holidayLet',
+    question: 'Holiday Let?',
+    options: ['No', 'Yes'],
+    tier1: 'No',
+    tier2: 'No',
+    tier3: 'Yes',
+    coreEligible: 'No',
+  },
+  {
+    id: 'hmo',
+    question: 'HMO (House in Multiple Occupation)?',
+    options: ['No', 'Yes'],
+    tier1: 'No',
+    tier2: 'Yes',
+    tier3: 'Yes',
+    coreEligible: 'No',
+  },
+  {
+    id: 'newBuild',
+    question: 'New Build?',
+    options: ['No', 'Yes'],
+    tier1: 'No',
+    tier2: 'Yes',
+    tier3: 'Yes',
+    coreEligible: 'No',
+  },
+  {
+    id: 'offshoreCompany',
+    question: 'Offshore Company Ownership?',
+    options: ['No', 'Yes'],
+    tier1: 'No',
+    tier2: 'No',
+    tier3: 'Yes',
+    coreEligible: 'No',
+  },
+  {
+    id: 'ccj',
+    question: 'CCJs in last 3 years?',
+    options: ['No', 'Yes'],
+    tier1: 'No',
+    tier2: 'No',
+    tier3: 'Yes',
+    coreEligible: 'No',
+  },
+  {
+    id: 'adverse',
+    question: 'Adverse Credit History?',
+    options: ['No', 'Minor', 'Severe'],
+    tier1: 'No',
+    tier2: 'Minor',
+    tier3: 'Severe',
+    coreEligible: 'No',
+  },
+];
+
+// Commercial/Semi-Commercial Criteria Questions
+export const COMMERCIAL_CRITERIA = [
+  {
+    id: 'companyOwnership',
+    question: 'Company Ownership Type?',
+    options: ['UK Ltd', 'Offshore', 'Partnership'],
+    tier1: 'UK Ltd',
+    tier2: 'Partnership',
+    coreEligible: null, // Core not available for commercial
+  },
+  {
+    id: 'tradingHistory',
+    question: 'Trading History?',
+    options: ['3+ years', '1-3 years', 'Less than 1 year'],
+    tier1: '3+ years',
+    tier2: '1-3 years',
+    coreEligible: null,
+  },
+  {
+    id: 'tenancy',
+    question: 'Tenancy Status?',
+    options: ['Occupied', 'Vacant', 'Part Occupied'],
+    tier1: 'Occupied',
+    tier2: 'Part Occupied',
+    coreEligible: null,
+  },
+  {
+    id: 'propertyCondition',
+    question: 'Property Condition?',
+    options: ['Good', 'Fair', 'Needs Work'],
+    tier1: 'Good',
+    tier2: 'Fair',
+    coreEligible: null,
+  },
+  {
+    id: 'commercialCCJ',
+    question: 'Company CCJs in last 3 years?',
+    options: ['No', 'Yes'],
+    tier1: 'No',
+    tier2: 'No',
+    coreEligible: null,
+  },
+];
+
+// Get criteria based on property type
+export const getCriteriaForPropertyType = (propertyType) => {
+  if (propertyType === PROPERTY_TYPES.RESIDENTIAL) {
+    return RESIDENTIAL_CRITERIA;
+  } else {
+    // Both Semi-Commercial and Commercial use commercial criteria
+    return COMMERCIAL_CRITERIA;
+  }
+};

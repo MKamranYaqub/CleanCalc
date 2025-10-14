@@ -1,109 +1,89 @@
-/**
- * Rate selection logic based on product parameters
- */
-import { PROPERTY_TYPES, PRODUCT_GROUPS, CORE_FLOOR_RATE, FEE_COLUMNS } from '../config/constants';
 import {
   RATES_DATA,
+  RATES_SEMI_COMMERCIAL,
   RATES_COMMERCIAL,
   RATES_CORE,
   RATES_RETENTION_65,
   RATES_RETENTION_75,
   RATES_CORE_RETENTION_65,
   RATES_CORE_RETENTION_75,
-} from '../config/rates';
-import { MAX_LTV_RULES } from '../config/criteria';
+} from '../config/ratesData';
+import { PRODUCT_GROUPS, PROPERTY_TYPES } from '../config/constants';
 
 /**
- * Get maximum LTV based on property and loan parameters
+ * Get the appropriate rate data based on property type, product group, and retention status
  */
-export const getMaxLTV = (params) => {
-  const { propertyType, isRetention, retentionLtv, propertyAnswers = {}, tier } = params;
-  const def = MAX_LTV_RULES.default?.[propertyType] ?? 75;
-  const numericLtv = Number(String(retentionLtv || "").match(/\d+/)?.[0]);
-  
-  const isFlat = propertyAnswers.flatAboveComm === "Yes" || 
-                 propertyAnswers?.criteria?.flatAboveComm === "Yes";
-  
-  let retOv = null;
-  if (isRetention === "Yes" && numericLtv) {
-    retOv = MAX_LTV_RULES.retention?.[propertyType]?.[numericLtv];
-  }
-  
-  let flatOv = null;
-  if (propertyType === PROPERTY_TYPES.RESIDENTIAL && isFlat && 
-      MAX_LTV_RULES.flatAboveCommOverrides?.[tier] != null) {
-    flatOv = MAX_LTV_RULES.flatAboveCommOverrides[tier];
-  }
-  
-  const applicable = [def];
-  if (retOv != null) applicable.push(retOv);
-  if (flatOv != null) applicable.push(flatOv);
-  return Math.min(...applicable) / 100;
-};
-
-/**
- * Select the appropriate rate source based on parameters
- */
-export const selectRateSource = (params) => {
-  const { propertyType, productGroup, isRetention, retentionLtv, tier, productType } = params;
-  const isCommercial = propertyType === PROPERTY_TYPES.COMMERCIAL || 
-                       propertyType === PROPERTY_TYPES.SEMI_COMMERCIAL;
-
-  if (productGroup === PRODUCT_GROUPS.CORE && propertyType === PROPERTY_TYPES.RESIDENTIAL) {
-    if (isRetention === "Yes") {
-      const coreRetRates = retentionLtv === "65" 
-        ? RATES_CORE_RETENTION_65 
-        : RATES_CORE_RETENTION_75;
-      return coreRetRates?.[tier]?.products?.[productType];
+export const getRateData = (propertyType, productGroup, isRetention = false, retentionLTV = null) => {
+  // BTL Core Products (only for Residential)
+  if (productGroup === PRODUCT_GROUPS.CORE) {
+    if (propertyType !== PROPERTY_TYPES.RESIDENTIAL) {
+      return null; // Core not available for Semi-Commercial or Commercial
     }
-    return RATES_CORE?.[tier]?.products?.[productType];
-  }
-
-  if (isRetention === "Yes") {
-    const retentionRates = retentionLtv === "65" 
-      ? RATES_RETENTION_65 
-      : RATES_RETENTION_75;
-    return propertyType === PROPERTY_TYPES.RESIDENTIAL
-      ? retentionRates?.Residential?.[tier]?.products?.[productType]
-      : retentionRates?.Commercial?.[tier]?.products?.[productType];
-  }
-
-  return isCommercial
-    ? RATES_COMMERCIAL?.[tier]?.products?.[productType]
-    : RATES_DATA?.[tier]?.products?.[productType];
-};
-
-/**
- * Get fee columns based on product configuration
- */
-export const getFeeColumns = (params) => {
-  const { productGroup, isRetention, retentionLtv, propertyType } = params;
-  
-  if (productGroup === PRODUCT_GROUPS.CORE && propertyType === PROPERTY_TYPES.RESIDENTIAL) {
-    if (isRetention === "Yes") {
-      return retentionLtv === "65" 
-        ? FEE_COLUMNS.Core_Retention_65 
-        : FEE_COLUMNS.Core_Retention_75;
+    
+    if (isRetention) {
+      return retentionLTV <= 65 ? RATES_CORE_RETENTION_65 : RATES_CORE_RETENTION_75;
     }
-    return FEE_COLUMNS.Core;
+    
+    return RATES_CORE;
   }
-  
-  if (isRetention === "Yes") {
-    return propertyType === PROPERTY_TYPES.RESIDENTIAL
-      ? FEE_COLUMNS.RetentionResidential
-      : FEE_COLUMNS.RetentionCommercial;
+
+  // BTL Specialist Products
+  if (productGroup === PRODUCT_GROUPS.SPECIALIST) {
+    if (isRetention) {
+      const retentionRates = retentionLTV <= 65 ? RATES_RETENTION_65 : RATES_RETENTION_75;
+      return retentionRates[propertyType] || retentionRates.Residential;
+    }
+
+    // Standard products
+    switch (propertyType) {
+      case PROPERTY_TYPES.RESIDENTIAL:
+        return RATES_DATA;
+      case PROPERTY_TYPES.SEMI_COMMERCIAL:
+        return RATES_SEMI_COMMERCIAL;
+      case PROPERTY_TYPES.COMMERCIAL:
+        return RATES_COMMERCIAL;
+      default:
+        return RATES_DATA;
+    }
   }
-  
-  return FEE_COLUMNS[propertyType] || [6, 4, 3, 2];
+
+  return RATES_DATA; // Default fallback
 };
 
 /**
- * Apply floor rate for Core products
+ * Get available LTV bands for a specific product and tier
  */
-export const applyFloorRate = (rate, productGroup, propertyType) => {
-  if (productGroup === PRODUCT_GROUPS.CORE && 
-      propertyType === PROPERTY_TYPES.RESIDENTIAL) {
-    return Math.max(rate, CORE_FLOOR_RATE);
+export const getAvailableLTVBands = (rateData, tier, productName) => {
+  if (!rateData || !rateData[tier] || !rateData[tier].products[productName]) {
+    return [];
   }
-  return rate;
+
+  const ltvBands = Object.keys(rateData[tier].products[productName])
+    .filter(key => key !== 'isMargin')
+    .map(Number)
+    .sort((a, b) => b - a); // Sort descending
+
+  return ltvBands;
+};
+
+/**
+ * Get rate for specific parameters
+ */
+export const getRate = (rateData, tier, productName, ltvBand) => {
+  if (!rateData || !rateData[tier] || !rateData[tier].products[productName]) {
+    return null;
+  }
+
+  return rateData[tier].products[productName][ltvBand] || null;
+};
+
+/**
+ * Check if product is a margin product (tracker)
+ */
+export const isMarginProduct = (rateData, tier, productName) => {
+  if (!rateData || !rateData[tier] || !rateData[tier].products[productName]) {
+    return false;
+  }
+
+  return rateData[tier].products[productName].isMargin === true;
 };

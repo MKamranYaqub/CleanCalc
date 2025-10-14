@@ -1,131 +1,86 @@
-/**
- * Criteria section component
- */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Collapsible } from './UI/Collapsible';
+import { getCriteriaForPropertyType } from '../config/criteriaConfig';
+import { PROPERTY_TYPES } from '../config/constants';
 
-export const CriteriaSection = ({
-  isOpen,
-  onToggle,
-  currentCriteria,
-  criteria,
-  setCriteria,
+export const CriteriaSection = ({ 
+  propertyType, 
+  criteriaAnswers, 
+  setCriteriaAnswers 
 }) => {
-  return (
-    <Collapsible
-      title="🏠 Criteria"
-      isOpen={isOpen}
-      onToggle={onToggle}
-    >
-      <div style={{
-        display: "grid",
-        gap: "16px",
-        gridTemplateColumns: "repeat(4, minmax(220px, 1fr))",
-      }}>
-        {currentCriteria?.propertyQuestions?.map((q) => (
-          <div key={q.key} style={{ display: "flex", flexDirection: "column", marginBottom: 12 }}>
-            <label style={{ fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 6 }}>
-              {q.label}
-            </label>
-            <select
-              value={criteria[q.key]}
-              onChange={(e) =>
-                setCriteria((prev) => ({
-                  ...prev,
-                  [q.key]: e.target.value,
-                }))
-              }
-              style={{
-                width: "100%",
-                height: 36,
-                padding: "6px 10px",
-                border: "1px solid #cbd5e1",
-                borderRadius: 6,
-                background: "#fff",
-                fontSize: 14,
-              }}
-            >
-              {q.options.map((o) => (
-                <option key={o.label} value={o.label}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-            {q.helper && (
-              <div style={{
-                marginTop: 8,
-                background: "#f1f5f9",
-                color: "#475569",
-                fontSize: 12,
-                padding: "8px 10px",
-                borderRadius: 8,
-                textAlign: "center",
-              }}>
-                {q.helper}
-              </div>
-            )}
-          </div>
-        ))}
+  const criteria = getCriteriaForPropertyType(propertyType);
 
-        {currentCriteria?.applicantQuestions?.map((q) => (
-          <div key={q.key} style={{ display: "flex", flexDirection: "column", marginBottom: 12 }}>
-            <label style={{ fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 6 }}>
-              {q.label}
+  const handleAnswerChange = (questionId, value) => {
+    setCriteriaAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
+
+  return (
+    <div style={{
+      marginBottom: '20px',
+      padding: '20px',
+      background: '#ffffff',
+      border: '1px solid #e2e8f0',
+      borderRadius: '8px',
+    }}>
+      <h3 style={{
+        margin: '0 0 16px 0',
+        fontSize: '18px',
+        fontWeight: 700,
+        color: '#0f172a',
+      }}>
+        {propertyType === PROPERTY_TYPES.RESIDENTIAL 
+          ? 'Residential Criteria' 
+          : 'Commercial Criteria'}
+      </h3>
+
+      <div style={{
+        display: 'grid',
+        gap: '16px',
+      }}>
+        {criteria.map((criteriaItem) => (
+          <div key={criteriaItem.id}>
+            <label style={{
+              display: 'block',
+              fontWeight: 600,
+              fontSize: '14px',
+              color: '#334155',
+              marginBottom: '8px',
+            }}>
+              {criteriaItem.question}
             </label>
             <select
-              value={criteria[q.key]}
-              onChange={(e) =>
-                setCriteria((prev) => ({
-                  ...prev,
-                  [q.key]: e.target.value,
-                }))
-              }
+              value={criteriaAnswers[criteriaItem.id] || criteriaItem.options[0]}
+              onChange={(e) => handleAnswerChange(criteriaItem.id, e.target.value)}
               style={{
-                width: "100%",
-                height: 36,
-                padding: "6px 10px",
-                border: "1px solid #cbd5e1",
-                borderRadius: 6,
-                background: "#fff",
-                fontSize: 14,
+                width: '100%',
+                padding: '10px 12px',
+                fontSize: '14px',
+                border: '2px solid #e2e8f0',
+                borderRadius: '6px',
+                background: '#ffffff',
+                color: '#0f172a',
+                cursor: 'pointer',
+                fontFamily: 'inherit',
               }}
             >
-              {q.options.map((o) => (
-                <option key={o.label} value={o.label}>
-                  {o.label}
+              {criteriaItem.options.map((option) => (
+                <option key={option} value={option}>
+                  {option}
                 </option>
               ))}
             </select>
           </div>
         ))}
       </div>
-    </Collapsible>
+    </div>
   );
 };
 
 CriteriaSection.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired,
-  currentCriteria: PropTypes.shape({
-    propertyQuestions: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      options: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        tier: PropTypes.number.isRequired,
-      })).isRequired,
-      helper: PropTypes.string,
-    })),
-    applicantQuestions: PropTypes.arrayOf(PropTypes.shape({
-      key: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      options: PropTypes.arrayOf(PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        tier: PropTypes.number.isRequired,
-      })).isRequired,
-    })),
-  }).isRequired,
-  criteria: PropTypes.object.isRequired,
-  setCriteria: PropTypes.func.isRequired,
+  propertyType: PropTypes.string.isRequired,
+  criteriaAnswers: PropTypes.object.isRequired,
+  setCriteriaAnswers: PropTypes.func.isRequired,
 };
