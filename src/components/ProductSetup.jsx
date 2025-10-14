@@ -4,7 +4,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { SectionTitle } from './UI/SectionTitle';
-import { PROPERTY_TYPES, PRODUCT_GROUPS } from '../config/constants';
 
 export const ProductSetup = ({
   mainProductType,
@@ -15,9 +14,6 @@ export const ProductSetup = ({
   setIsRetention,
   retentionLtv,
   setRetentionLtv,
-  productGroup,
-  setProductGroup,
-  isWithinCoreCriteria,
   tier,
 }) => {
   return (
@@ -30,10 +26,11 @@ export const ProductSetup = ({
       padding: "16px",
     }}>
       <SectionTitle>Product Setup</SectionTitle>
+      
       <div style={{
         background: "#f1f5f9",
         color: "#334155",
-        fontSize: 14,
+        fontSize: "14px",
         padding: "8px 12px",
         borderRadius: 8,
         marginTop: 4,
@@ -143,63 +140,6 @@ export const ProductSetup = ({
             </select>
           </div>
         )}
-
-        {/* BTL Product Group (Core/Specialist toggle) */}
-        {propertyType === PROPERTY_TYPES.RESIDENTIAL && (
-          <div style={{ display: "flex", flexDirection: "column", marginBottom: 12 }}>
-            <label style={{ fontSize: 12, fontWeight: 600, color: "#334155", marginBottom: 6 }}>
-              BTL Product Group
-            </label>
-            <div style={{
-              display: "inline-flex",
-              border: "1px solid #e2e3e4",
-              borderRadius: 8,
-              overflow: "hidden",
-              background: "#fff",
-            }}>
-              <button
-                type="button"
-                onClick={() => setProductGroup(PRODUCT_GROUPS.SPECIALIST)}
-                style={{
-                  flex: 1,
-                  border: "none",
-                  background: productGroup === PRODUCT_GROUPS.SPECIALIST ? "#008891" : "transparent",
-                  color: productGroup === PRODUCT_GROUPS.SPECIALIST ? "#fff" : "#000",
-                  cursor: "pointer",
-                  fontWeight: productGroup === PRODUCT_GROUPS.SPECIALIST ? 700 : 600,
-                  padding: "8px 14px",
-                  margin: 0,
-                  lineHeight: 1,
-                  borderRight: "1px solid #e2e3e4",
-                  transition: "all 0.2s ease",
-                }}
-              >
-                BTL Specialist
-              </button>
-
-              {isWithinCoreCriteria && (
-                <button
-                  type="button"
-                  onClick={() => setProductGroup(PRODUCT_GROUPS.CORE)}
-                  style={{
-                    flex: 1,
-                    border: "none",
-                    background: productGroup === PRODUCT_GROUPS.CORE ? "#008891" : "transparent",
-                    color: productGroup === PRODUCT_GROUPS.CORE ? "#fff" : "#000",
-                    cursor: "pointer",
-                    fontWeight: productGroup === PRODUCT_GROUPS.CORE ? 700 : 600,
-                    padding: "8px 14px",
-                    margin: 0,
-                    lineHeight: 1,
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  BTL Core
-                </button>
-              )}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -214,8 +154,5 @@ ProductSetup.propTypes = {
   setIsRetention: PropTypes.func.isRequired,
   retentionLtv: PropTypes.string.isRequired,
   setRetentionLtv: PropTypes.func.isRequired,
-  productGroup: PropTypes.string.isRequired,
-  setProductGroup: PropTypes.func.isRequired,
-  isWithinCoreCriteria: PropTypes.bool.isRequired,
   tier: PropTypes.string.isRequired,
 };

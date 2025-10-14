@@ -44,3 +44,4 @@ export const FEE_COLUMNS = {
   Core_Retention_65: [5.5, 3.5, 2.5, 1.5],
   Core_Retention_75: [5.5, 3.5, 2.5, 1.5],
 };
+
